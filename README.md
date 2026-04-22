@@ -1,17 +1,17 @@
-# vp-studio-marketplace
+# vp-studio-plugin
 
 Claude Code plugin marketplace hosting VP Studio tools for animation, virtual production, and VFX.
 
 ## Install the marketplace
 
 ```
-/plugin marketplace add <repo-url-or-local-path>
+/plugin marketplace add thessenvp/vp-studio-plugin
 ```
 
 Local example (during development):
 
 ```
-/plugin marketplace add C:/Users/minkyun_park/Documents/Claude/vp-studio-marketplace
+/plugin marketplace add C:/Users/minkyun_park/Documents/Claude/vp-studio-plugin
 ```
 
 ## Plugins
@@ -23,13 +23,13 @@ Local example (during development):
 ## Install a plugin
 
 ```
-/plugin install vp-studio@vp-studio-marketplace
+/plugin install vp-studio@vp-studio-plugin
 ```
 
 ## Layout
 
 ```
-vp-studio-marketplace/
+vp-studio-plugin/
 ├── .claude-plugin/marketplace.json
 ├── plugins/
 │   └── vp-studio/          # bundled plugin (relative-path source)

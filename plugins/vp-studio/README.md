@@ -29,6 +29,6 @@ vp-studio/
 ## Install (after publishing)
 
 ```
-/plugin marketplace add <marketplace-repo-url>
-/plugin install vp-studio@vp-studio-marketplace
+/plugin marketplace add thessenvp/vp-studio-plugin
+/plugin install vp-studio@vp-studio-plugin
 ```
