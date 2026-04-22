@@ -62,11 +62,13 @@ jobs:
           git add .claude-plugin/marketplace.json
           git commit -m "chore(release): point marketplace to ${{ steps.tag.outputs.tag }}"
           git push origin "$BRANCH"
+          BODY=$(printf 'Automated PR from release workflow. Updates `marketplace.json` to pin `plugins[0].source.ref` at `%s` and bump `version` to `%s`.\n\nMerge this to make `/plugin install vp-studio@vp-studio-plugin` resolve to `%s`.' \
+            "${{ steps.tag.outputs.tag }}" \
+            "${{ steps.tag.outputs.version }}" \
+            "${{ steps.tag.outputs.tag }}")
           gh pr create \
             --title "chore(release): ${{ steps.tag.outputs.tag }}" \
-            --body "Automated PR from release workflow. Updates \`marketplace.json\` to pin \`plugins[0].source.ref\` at \`${{ steps.tag.outputs.tag }}\` and bump \`version\` to \`${{ steps.tag.outputs.version }}\`.
-
-Merge this to make \`/plugin install vp-studio@vp-studio-plugin\` resolve to \`${{ steps.tag.outputs.tag }}\`." \
+            --body "$BODY" \
             --base main \
             --head "$BRANCH"
 
