@@ -12,7 +12,11 @@
   "plugins": [
     {
       "name": "vp-studio",
-      "source": "./plugins/vp-studio",
+      "source": {
+        "source": "github",
+        "repo": "thessenvp/vp-studio-plugin",
+        "ref": "v0.1.0"
+      },
       "description": "VP domain tools: mocap, MetaHuman, Unreal, LED wall, nDisplay, asset naming, pipeline automation",
       "version": "0.1.0",
       "category": "virtual-production",
