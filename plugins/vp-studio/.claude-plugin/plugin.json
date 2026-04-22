@@ -17,5 +17,169 @@
     "led-wall",
     "vfx",
     "animation"
-  ]
+  ],
+  "userConfig": {
+    "hub_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp",
+      "title": "Hub root",
+      "description": "Root of the knowledge Hub (docs, sessions, DB, inbox, wiki). All Hub subpaths default to this root."
+    },
+    "docs_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs",
+      "title": "Hub docs root",
+      "description": "Domain-categorized documents. Skills read/write session files, briefings, daily recaps under this path."
+    },
+    "sessions_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs/pipeline/sessions",
+      "title": "Pipeline sessions root",
+      "description": "VP Supervisor session files. Used by take-log, opt-review, color-check, shoot-gate, kpi-report, etc."
+    },
+    "briefings_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs/pipeline/briefings",
+      "title": "Briefings root",
+      "description": "Per-department briefing outputs. Used by team-brief, mocap-brief, brief-scene."
+    },
+    "mocap_sessions_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs/mocap/sessions",
+      "title": "MoCap sessions root",
+      "description": "MoCap session files (OptiTrack/Motive take logs, retargeting notes)."
+    },
+    "risk_playbooks_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs/pipeline/risk-playbooks",
+      "title": "Risk playbooks root",
+      "description": "Risk-scenario playbook repository. risk-flag skill references these for on-site emergency response."
+    },
+    "daily_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/docs/daily",
+      "title": "Daily recap root",
+      "description": "Cross-domain daily recaps. daily-recap and supervisor-recap write here."
+    },
+    "inbox_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/inbox",
+      "title": "Inbox root",
+      "description": "Raw source materials awaiting distillation into wiki. compile-wiki input."
+    },
+    "wiki_root": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/wiki",
+      "title": "Wiki root",
+      "description": "Distilled knowledge base. compile-wiki output."
+    },
+    "doc_manager_db_path": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/scripts/utils/doc_manager/doc_manager.db",
+      "title": "doc_manager DB path",
+      "description": "SQLite FTS5 index for document search. Project-owned; Plugin reads via hub_cli.doc_manager."
+    },
+    "hub_cli_python": {
+      "type": "string",
+      "default": "python",
+      "title": "Python executable",
+      "description": "Python interpreter used to invoke Project Hub CLIs. Override for virtualenv (e.g., `.venv/Scripts/python.exe`)."
+    },
+    "hub_cli_doc_manager": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/scripts/utils/doc_manager/cli.py",
+      "title": "doc_manager CLI path",
+      "description": "Path to Project's doc_manager CLI. Used by search-docs, doc-stats, new-doc."
+    },
+    "hub_cli_doc_verifier": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/scripts/utils/doc_verifier/cli.py",
+      "title": "doc_verifier CLI path",
+      "description": "Path to Project's doc_verifier CLI. Used by verify-docs."
+    },
+    "hub_cli_reviewer": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/scripts/utils/reviewer/cli.py",
+      "title": "vp-review CLI path",
+      "description": "Path to Project's reviewer CLI. Used by vp-review."
+    },
+    "hub_cli_confluence_migrator": {
+      "type": "string",
+      "default": "${CLAUDE_PROJECT_DIR}/vp/scripts/utils/confluence_migrator/cli.py",
+      "title": "confluence_migrator CLI path",
+      "description": "Path to Confluence migrator CLI. Invoked only if confluence_enabled is true."
+    },
+    "ollama_enabled": {
+      "type": "boolean",
+      "default": false,
+      "title": "Enable Ollama/Gemma delegation",
+      "description": "If true, agents may delegate summarization, translation, and boilerplate tasks to a local Ollama model via gemma.ps1."
+    },
+    "ollama_endpoint": {
+      "type": "string",
+      "default": "http://localhost:11434",
+      "title": "Ollama endpoint",
+      "description": "HTTP endpoint of the Ollama server. gemma.ps1 posts to this URL root."
+    },
+    "ollama_model": {
+      "type": "string",
+      "default": "0xIbra/supergemma4-26b-uncensored-gguf-v2:Q4_K_M",
+      "title": "Ollama model tag",
+      "description": "Default model tag for gemma.ps1. Override per call via script argument."
+    },
+    "ollama_temperature": {
+      "type": "number",
+      "default": 0.2,
+      "title": "Ollama temperature",
+      "description": "Default sampling temperature for Gemma delegation. Override per call via script argument."
+    },
+    "vpo_plugin_root": {
+      "type": "string",
+      "default": "",
+      "title": "VPO UE plugin root",
+      "description": "Local path to the VPO UE plugin workspace (e.g., Z:/VPO/1_Plugins). Leave empty to disable UE plugin-related skills."
+    },
+    "perforce_workspace_root": {
+      "type": "string",
+      "default": "",
+      "title": "Perforce workspace root",
+      "description": "Local Perforce workspace root (e.g., C:/ws/depot). Referenced by asset-checklist and opt-review."
+    },
+    "ue_engine_5_7_path": {
+      "type": "string",
+      "default": "C:/Program Files/Epic Games/UE_5.7",
+      "title": "UE 5.7 install path",
+      "description": "Unreal Engine 5.7 install directory. Used by new-plugin build scripts when registry auto-detect fails. Additional UE versions can be added as separate fields (ue_engine_5_8_path, etc.)."
+    },
+    "confluence_enabled": {
+      "type": "boolean",
+      "default": false,
+      "title": "Enable Confluence migration",
+      "description": "Gate for confluence-related skills. If false, the migrator CLI is not invoked."
+    },
+    "confluence_base_url": {
+      "type": "string",
+      "default": "",
+      "title": "Confluence base URL",
+      "description": "Base URL of the Confluence instance. Required when confluence_enabled is true."
+    },
+    "telemetry_enabled": {
+      "type": "boolean",
+      "default": false,
+      "title": "Enable telemetry hooks",
+      "description": "If true, Project-side hook_recorder emits telemetry events. Plugin does not implement telemetry; this toggle signals intent."
+    },
+    "notify_channels": {
+      "type": "string",
+      "default": "",
+      "title": "Notification channels",
+      "description": "Comma-separated list of channels enabled for notify skill. Example: \"telegram,discord\". Tokens/config live in Project layer."
+    },
+    "hub_read_only_paths": {
+      "type": "string",
+      "default": "vp/sessions/quick-notes.md,vp/_archive/**",
+      "title": "Hub read-only paths",
+      "description": "Comma-separated glob patterns (relative to CLAUDE_PROJECT_DIR) that Plugin skills must never write. User-owned or archive-only areas."
+    }
+  }
 }

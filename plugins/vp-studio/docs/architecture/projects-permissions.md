@@ -56,4 +56,4 @@ projects/{PROJ}/
 - `vp/sessions/quick-notes.md` — 유저 직접 소유 (CLAUDE.md 에 명시)
 - `_archive/` — 히스토리 참고 전용
 
-Plugin skill 은 userConfig `hub_read_only_paths` 배열로 이 영역을 인지. 해당 경로 쓰기 시도는 자동 차단 권장.
+Plugin skill 은 userConfig `hub_read_only_paths` (comma-separated glob) 로 이 영역을 인지. 해당 경로 쓰기 시도는 자동 차단 권장.
