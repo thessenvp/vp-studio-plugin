@@ -1,0 +1,22 @@
+{
+  "name": "vp-studio-marketplace",
+  "owner": {
+    "name": "VP Studio",
+    "email": "thessenvp@gmail.com"
+  },
+  "metadata": {
+    "description": "VP Studio plugins for animation, virtual production, and VFX pipelines",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "vp-studio",
+      "source": "vp-studio",
+      "description": "VP domain tools: mocap, MetaHuman, Unreal, LED wall, nDisplay, asset naming, pipeline automation",
+      "version": "0.1.0",
+      "category": "virtual-production",
+      "keywords": ["vp", "unreal", "metahuman", "mocap", "ndisplay", "led-wall", "optitrack"]
+    }
+  ]
+}

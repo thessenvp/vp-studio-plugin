@@ -1,0 +1,25 @@
+{
+  "name": "vp-studio",
+  "version": "0.1.0",
+  "description": "VP Studio toolkit for animation, virtual production, and VFX pipelines — mocap, MetaHuman, Unreal, nDisplay, LED wall workflows",
+  "author": {
+    "name": "VP Studio",
+    "email": "thessenvp@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "virtual-production",
+    "unreal-engine",
+    "metahuman",
+    "motion-capture",
+    "optitrack",
+    "ndisplay",
+    "led-wall",
+    "vfx",
+    "animation"
+  ],
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}
