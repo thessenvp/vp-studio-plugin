@@ -34,6 +34,14 @@ jobs:
           MF=.claude-plugin/marketplace.json
           TAG="${{ steps.tag.outputs.tag }}"
           VERSION="${{ steps.tag.outputs.version }}"
+          CURRENT_REF=$(jq -r '.plugins[0].source.ref // ""' "$MF")
+          CURRENT_VER=$(jq -r '.plugins[0].version // ""' "$MF")
+          CURRENT_KIND=$(jq -r '.plugins[0].source.source // ""' "$MF")
+          if [ "$CURRENT_KIND" = "github" ] && [ "$CURRENT_REF" = "$TAG" ] && [ "$CURRENT_VER" = "$VERSION" ]; then
+            echo "Already at $TAG (version $VERSION) — no bump needed."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           jq --arg tag "$TAG" --arg ver "$VERSION" '
             .plugins[0].version = $ver |
             .plugins[0].source = {
@@ -43,11 +51,7 @@ jobs:
             }
           ' "$MF" > "$MF.tmp"
           mv "$MF.tmp" "$MF"
-          if git diff --quiet "$MF"; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Open PR to bump marketplace ref
         if: steps.bump.outputs.changed == 'true'
