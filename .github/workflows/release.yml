@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve tag and version
+        id: tag
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Tag: $TAG, Version: $VERSION"
+
+      - name: Bump marketplace.json plugin source/version
+        id: bump
+        run: |
+          set -e
+          MF=.claude-plugin/marketplace.json
+          TAG="${{ steps.tag.outputs.tag }}"
+          VERSION="${{ steps.tag.outputs.version }}"
+          jq --arg tag "$TAG" --arg ver "$VERSION" '
+            .plugins[0].version = $ver |
+            .plugins[0].source = {
+              "source": "github",
+              "repo": "thessenvp/vp-studio-plugin",
+              "ref": $tag
+            }
+          ' "$MF" > "$MF.tmp"
+          mv "$MF.tmp" "$MF"
+          if git diff --quiet "$MF"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open PR to bump marketplace ref
+        if: steps.bump.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          BRANCH="release/${{ steps.tag.outputs.tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add .claude-plugin/marketplace.json
+          git commit -m "chore(release): point marketplace to ${{ steps.tag.outputs.tag }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "chore(release): ${{ steps.tag.outputs.tag }}" \
+            --body "Automated PR from release workflow. Updates \`marketplace.json\` to pin \`plugins[0].source.ref\` at \`${{ steps.tag.outputs.tag }}\` and bump \`version\` to \`${{ steps.tag.outputs.version }}\`.
+
+Merge this to make \`/plugin install vp-studio@vp-studio-plugin\` resolve to \`${{ steps.tag.outputs.tag }}\`." \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Skip PR (no changes needed)
+        if: steps.bump.outputs.changed == 'false'
+        run: |
+          echo "marketplace.json already matches ${{ steps.tag.outputs.tag }} — no PR needed."
+
+      - name: Create GitHub Release with auto notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          TAG="${{ steps.tag.outputs.tag }}"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG already exists — skipping creation."
+          else
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --generate-notes
+          fi
