@@ -1,0 +1,94 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  json-and-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON syntax for every .json
+        run: |
+          set -e
+          FAILED=0
+          while IFS= read -r -d '' f; do
+            if ! jq -e . "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::Invalid JSON"
+              FAILED=1
+            fi
+          done < <(find . -type f -name '*.json' -not -path './node_modules/*' -not -path './.git/*' -print0)
+          exit $FAILED
+
+      - name: Assert marketplace manifest required fields
+        run: |
+          set -e
+          MF=.claude-plugin/marketplace.json
+          jq -e '.name | type == "string" and test("^[a-z0-9-]+$")' "$MF" > /dev/null \
+            || (echo "::error::marketplace.json .name must be kebab-case string" && exit 1)
+          jq -e '.owner.name | type == "string"' "$MF" > /dev/null \
+            || (echo "::error::marketplace.json .owner.name missing" && exit 1)
+          jq -e '.plugins | type == "array" and length > 0' "$MF" > /dev/null \
+            || (echo "::error::marketplace.json .plugins must be non-empty array" && exit 1)
+          for i in $(jq -r '.plugins | keys[]' "$MF"); do
+            jq -e ".plugins[$i].name | type == \"string\" and test(\"^[a-z0-9-]+$\")" "$MF" > /dev/null \
+              || (echo "::error::plugins[$i].name must be kebab-case string" && exit 1)
+            jq -e ".plugins[$i].source" "$MF" > /dev/null \
+              || (echo "::error::plugins[$i].source missing" && exit 1)
+          done
+
+      - name: Assert plugin manifest required fields
+        run: |
+          set -e
+          shopt -s nullglob
+          FOUND=0
+          for manifest in plugins/*/.claude-plugin/plugin.json; do
+            FOUND=1
+            echo "Checking $manifest"
+            jq -e '.name | type == "string" and test("^[a-z0-9-]+$")' "$manifest" > /dev/null \
+              || (echo "::error file=$manifest::.name must be kebab-case string" && exit 1)
+            jq -e '.version | type == "string"' "$manifest" > /dev/null \
+              || (echo "::error file=$manifest::.version missing" && exit 1)
+          done
+          if [ "$FOUND" = "0" ]; then
+            echo "::error::No plugins/*/.claude-plugin/plugin.json found"
+            exit 1
+          fi
+
+      - name: Check skill frontmatter
+        run: |
+          set -e
+          shopt -s nullglob
+          for skill in plugins/*/skills/*/SKILL.md; do
+            echo "Checking $skill"
+            if ! head -n 20 "$skill" | grep -q '^name:'; then
+              echo "::error file=$skill::Missing 'name:' in frontmatter"
+              exit 1
+            fi
+            if ! head -n 20 "$skill" | grep -q '^description:'; then
+              echo "::error file=$skill::Missing 'description:' in frontmatter"
+              exit 1
+            fi
+          done
+
+      - name: Check agent frontmatter (pointer files)
+        run: |
+          set -e
+          shopt -s nullglob
+          for agent in plugins/*/agents/*.md; do
+            echo "Checking $agent"
+            if ! head -n 10 "$agent" | grep -q '^name:'; then
+              echo "::error file=$agent::Missing 'name:' in frontmatter"
+              exit 1
+            fi
+            if ! head -n 10 "$agent" | grep -q '^description:'; then
+              echo "::error file=$agent::Missing 'description:' in frontmatter"
+              exit 1
+            fi
+          done
