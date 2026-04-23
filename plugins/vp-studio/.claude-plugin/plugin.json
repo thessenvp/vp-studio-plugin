@@ -1,6 +1,6 @@
 {
   "name": "vp-studio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "VP Studio toolkit for animation, virtual production, and VFX pipelines — mocap, MetaHuman, Unreal, nDisplay, LED wall workflows",
   "author": {
     "name": "VP Studio",

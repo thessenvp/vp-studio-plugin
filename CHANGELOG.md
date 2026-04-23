@@ -7,6 +7,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-23
+
+Content migration wave — VP rules, agent SSOTs, Plugin scripts, and the
+full VP Supervisor skill suite land. Plugin now covers the end-to-end
+workflow (Pre-prod → Quality Gate → On-set → Post → Support). Still
+beta (0.x); Project CLI wiring and multi-studio testing remain before
+1.0.0.
+
+### Added
+- **15 vp-agent rules** under `agents/vp-agent/.claude/rules/`:
+  - Domain-general (Phase 2, 8): `asset-naming`, `optitrack`,
+    `color-pipeline`, `shoot-protocol`, `vp-equipment`, `vp-session`,
+    `vp-supervisor`, `development`
+  - Path-abstracted (Phase 3, 6): `gemma-delegation`, `knowledge-base`,
+    `save-session`, `unreal-engine`, `perforce`, `plugins`
+  - Principle-only port (Phase 3 addendum, 1): `modules`
+- **4 agent SSOTs** + 2 pointer files + registry:
+  - `agents/vp-agent/CLAUDE.md` with routing table of 27 keyword → rule
+    / skill mappings (Project-scope routes `doc-verification`,
+    `claude-ecosystem`, `openclaw-boundary`, `vp-review` intentionally
+    excluded)
+  - `agents/project-agent/CLAUDE.md`, `agents/scenario-agent/CLAUDE.md`
+  - `agents/refactorer/CLAUDE.md` + `rules/refactor-policy.md` +
+    `rules/escalation.md`
+  - Pointer files `agents/vp-agent.md` + `agents/refactorer.md`
+  - `agents/registry.md` reframed for Plugin scope
+- **Plugin-bundled scripts** under `scripts/`:
+  - `gemma.ps1` — reads `$env:OLLAMA_{ENDPOINT,MODEL,TEMP,ENABLED}`
+    matching userConfig; `enabled=false` → exit 3 graceful no-op;
+    optional telemetry hook via `$env:VP_TELEMETRY_SCRIPT`
+  - `notify/` package — merged from origin's split layout
+    (`vp/scripts/utils/notify` + `vp/modules/utils/notify`) into single
+    flat package with relative imports; `notify.yaml` fallback chain
+    (`$NOTIFY_CONFIG` → `tools/config/` → `vp/config/`); token still
+    sourced from `~/.openclaw/openclaw.json`
+- **16 VP Supervisor skills** (sync-check landed in v0.1.0; 16 added
+  here bring total to 17):
+  - Quality Gate / On-set (Phase 6.1, 7): `take-log`, `opt-review`,
+    `color-check`, `shoot-gate`, `kpi-report`, `data-wrangle`,
+    `handoff-pack`
+  - Briefing / Risk / Recap / Pre-prep (Phase 6.2, 9):
+    `asset-checklist`, `brief-scene`, `team-brief`, `mocap-brief`,
+    `risk-flag`, `risk-scenario`, `resource-plan`, `supervisor-recap`,
+    `daily-recap`
+  - `asset-checklist` is a late addition — it was referenced as a
+    shoot-gate prerequisite but missing from the original Phase plan
+- **Graceful fallback** on every terminal ingest/notify step in Phase
+  6.1 + 6.2 skills — if `hub_cli_doc_manager` / `notify_channels` are
+  unset, skip the step with a one-line user notice showing the manual
+  command, and treat the skill as 정상 완료 since the primary artefact
+  is already on disk
+
+### Changed
+- Small quality improvements per pre-migration review (Q3=α):
+  - `resource-plan`: burnout threshold levels made explicit
+    (HIGH 3d consec → MEDIUM; 5d or weekend → HIGH), schedule-risk
+    formula annotated with parallel-capacity multiplier
+  - `supervisor-recap`: added explicit `risk-flag` file scan; grep
+    patterns switched to `-E` regex for override/blocker keywords;
+    warning when tomorrow's `shoot_schedule` is missing
+  - `daily-recap`: `{요일}` template placeholder wired to Step 3's
+    weekday display directive; note added on git-commit-date vs
+    filename-date precedence
+- Rule references throughout skills rewritten as
+  "vp-agent 의 `<rule>.md` rule" prose to disambiguate from
+  Project-layer rules with overlapping names
+
+### Excluded (intentionally)
+- `doc-stats` skill — 34-line CLI wrapper over `doc_manager stats`;
+  Project-scope per A1 decision, stays at origin
+- `openclaw-boundary.md`, `doc-verification.md`, `claude-ecosystem.md`
+  rules — Project infrastructure, not portable across studios
+- `worktree_sync.py`, `worktree_cleanup.py`, `doc_manager` / `doc_verifier`
+  / `reviewer` / `confluence_migrator` / `telemetry` / `hook_recorder` —
+  Project-owned CLIs reached via `hub_cli_*` userConfig (Hub CLI
+  Contract)
+
+### Added (infra)
+- `plan-migration.md` — session handover document capturing full plan,
+  progress, open decisions, and resumption instructions
+
+### Known limitations
+- Plugin convention expects flat `agents/*.md`; the folder-SSOT pattern
+  (`agents/<name>/CLAUDE.md` + `.claude/rules/*.md`) triggers informational
+  frontmatter warnings on non-pointer files from `claude plugin validate`.
+  Functional agent definitions (pointer files) are fully valid.
+- Project CLIs (`doc_manager`, `doc_verifier`, etc.) must be wired via
+  userConfig before Hub-writing skills can round-trip through DB ingest.
+  Missing config falls back to manual-ingest notice (graceful, not fatal).
+
 ## [0.1.0] - 2026-04-22
 
 First pre-release. Scaffold + three-layer architecture contracts + Plugin layer PoC.
@@ -43,5 +133,6 @@ First pre-release. Scaffold + three-layer architecture contracts + Plugin layer 
 - Dropped explicit component paths in `plugin.json` (validator rejects
   empty directories declared as paths).
 
-[Unreleased]: https://github.com/thessenvp/vp-studio-plugin/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/thessenvp/vp-studio-plugin/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/thessenvp/vp-studio-plugin/releases/tag/v0.2.0
 [0.1.0]: https://github.com/thessenvp/vp-studio-plugin/releases/tag/v0.1.0
