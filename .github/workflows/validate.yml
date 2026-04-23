@@ -81,7 +81,16 @@ jobs:
         run: |
           set -e
           shopt -s nullglob
+          # Non-agent docs that live alongside agent pointers — skip.
+          # registry.md describes agents but is not an agent itself; it has no
+          # frontmatter by design. Add other doc-only filenames here as needed.
+          NON_AGENT_DOCS="registry.md"
           for agent in plugins/*/agents/*.md; do
+            base="$(basename "$agent")"
+            if echo "$NON_AGENT_DOCS" | grep -qw "$base"; then
+              echo "Skipping (non-agent doc): $agent"
+              continue
+            fi
             echo "Checking $agent"
             if ! head -n 10 "$agent" | grep -q '^name:'; then
               echo "::error file=$agent::Missing 'name:' in frontmatter"
