@@ -1,0 +1,26 @@
+# notify.yaml 예시 — Project 가 자체 경로에 이 파일을 두고 편집.
+#
+# Plugin 이 찾는 기본 위치:
+#   1. $NOTIFY_CONFIG (명시적 경로)
+#   2. {CLAUDE_PROJECT_DIR}/tools/config/notify.yaml
+#   3. {CLAUDE_PROJECT_DIR}/vp/config/notify.yaml (legacy)
+
+# 메시지를 받을 Telegram chat ID 목록 (문자열 권장 — 숫자도 허용)
+chat_ids:
+  - "1899267464"
+  - "7998914882"
+
+# (선택) chat_id 별 수신 severity 허용 리스트. 지정 안 하면 모두 허용.
+severity_map:
+  "1899267464": [info, warn, critical]
+  "7998914882": [warn, critical]
+
+# (선택) 완전히 끌 이벤트 타입
+mute_events:
+  - "build_failed"
+
+# (선택) 같은 event_type 이 이 시간(초) 내에 다시 발생하면 skip
+throttle_seconds: 60
+
+# Token 은 ~/.openclaw/openclaw.json 의 channels.telegram.botToken 을 재사용.
+# 없으면 TELEGRAM_BOT_TOKEN 환경변수 fallback.
