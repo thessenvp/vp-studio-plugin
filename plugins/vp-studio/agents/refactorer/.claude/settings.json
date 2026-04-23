@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git rebase:*)",
+      "Bash(git merge:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -f:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)"
+    ]
+  }
+}

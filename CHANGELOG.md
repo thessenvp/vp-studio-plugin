@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (settings.json — Phase 7)
+- **`agents/vp-agent/.claude/settings.json`** — VP Supervisor 기본 Bash 권한
+  - Allow: `find`, `ls`, `mkdir`, `cp`, `mv`, `cat`, `head`, `tail`, `wc`, `echo`, `python`, `powershell`, `git status/log/diff/add/show/branch`, `icacls`
+  - Deny: `git commit/push/reset --hard/checkout/branch -D/rebase/merge`, `rm -rf/f`, `pip/npm install`
+- **`agents/refactorer/.claude/settings.json`** — Refactorer 기본 Bash 권한 (읽기 중심)
+  - Allow: 파일 읽기 + git 읽기 전용 (`find`, `ls`, `cat/head/tail/wc`, `git status/log/diff/show/branch`)
+  - Deny: 모든 git 쓰기, 삭제, 패키지 관리
+
 ### Added (studio-share — Phase 7b)
 - **4 new userConfig fields** in `plugin.json`:
   - `studio_share_root` — Z:/VPO/6_claude 공유 드라이브 루트 (비어 있으면 로컬 Hub 경로 유지)
