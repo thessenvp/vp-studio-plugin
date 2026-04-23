@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-04-23
+
+첫 번째 안정화 릴리즈. Phase 7 시리즈(스튜디오 공유 드라이브 통합)와
+에이전트 권한 시스템이 완성되어 v1.0.0 으로 격상.
+pre-production → on-set → post → 공유 승격까지 엔드-투-엔드 VP Supervisor
+워크플로우가 플러그인 한 장으로 커버됨.
+
 ### Added (promote-share — Phase 7c)
 - **`promote-share` skill** — 개인 스크래치 → `_shared/labs/` 승격 공식 절차
   - **Step 3 리뷰 게이트 필수**: 사용자 명시적 승인(번호 선택 또는 all) 없이 Step 4 절대 불가
@@ -160,6 +167,7 @@ First pre-release. Scaffold + three-layer architecture contracts + Plugin layer 
 - Dropped explicit component paths in `plugin.json` (validator rejects
   empty directories declared as paths).
 
-[Unreleased]: https://github.com/thessenvp/vp-studio-plugin/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/thessenvp/vp-studio-plugin/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/thessenvp/vp-studio-plugin/releases/tag/v1.0.0
 [0.2.0]: https://github.com/thessenvp/vp-studio-plugin/releases/tag/v0.2.0
 [0.1.0]: https://github.com/thessenvp/vp-studio-plugin/releases/tag/v0.1.0
