@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (promote-share — Phase 7c)
+- **`promote-share` skill** — 개인 스크래치 → `_shared/labs/` 승격 공식 절차
+  - **Step 3 리뷰 게이트 필수**: 사용자 명시적 승인(번호 선택 또는 all) 없이 Step 4 절대 불가
+  - Step 0: userConfig 검증 + Z:\ probe (오프라인 시 `.pending-promote.json` 기록)
+  - Step 1~2: 후보 파일 탐색 + 요약 출력 (frontmatter + 첫 섹션)
+  - Step 4: 파일명 규칙 적용(`{date}_{initials}_{topic}.md`) + cp(원본 유지)
+  - `--dry-run` 옵션: 리뷰 게이트까지만 실행, 실제 복사 없음
+  - 오프라인 대기 흐름: Z:\ 복구 후 재실행 시 대기 목록 자동 감지 + 이미 리뷰된 파일은 게이트 재생략
+- `vp-agent/CLAUDE.md` 라우팅 테이블에 `승격 / promote / labs 올리기` 키워드 추가
+
 ### Added (settings.json — Phase 7)
 - **`agents/vp-agent/.claude/settings.json`** — VP Supervisor 기본 Bash 권한
   - Allow: `find`, `ls`, `mkdir`, `cp`, `mv`, `cat`, `head`, `tail`, `wc`, `echo`, `python`, `powershell`, `git status/log/diff/add/show/branch`, `icacls`
