@@ -147,6 +147,17 @@ category: session-records
 
 ### Step 5: DB 인제스트
 
+**사전 조건**: userConfig `hub_cli_doc_manager` 가 설정되어 있어야 함.
+
+미설정이거나 빈 값이면 이 Step 을 스킵하고 유저에게 한 줄로 알림:
+```
+⚠️ DB ingest 스킵 — hub_cli_doc_manager userConfig 미설정.
+  수동 등록: python <project-doc_manager-cli> ingest --file "${sessions_root}/{date}_{scene}_opt-review.md" --project vp
+```
+
+파일 작성(Step 4)은 이미 완료됐으므로 skill 은 정상 완료로 간주.
+
+설정되어 있으면 실행:
 ```bash
 ${hub_cli_python} ${hub_cli_doc_manager} ingest \
   --file "${sessions_root}/{date}_{scene}_opt-review.md" \

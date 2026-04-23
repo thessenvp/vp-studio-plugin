@@ -149,6 +149,15 @@ NO-GO 시 블로커 담당 액션 아이템 자동 생성:
 
 ### Step 4.5: Telegram Notify (모든 판정 결과)
 
+**사전 조건**: Plugin 번들 notify CLI 호출 가능 여부. 다음 중 하나라도 충족 안 되면 이 Step 을 스킵:
+- `userConfig.notify_channels` 가 비어있거나 `"telegram"` 미포함
+- Project 에 `~/.openclaw/openclaw.json` 또는 `$TELEGRAM_BOT_TOKEN` 미설정
+- Project 에 `notify.yaml` 없고 chat_ids 미설정
+
+스킵 시 유저에게 한 줄 알림: `⚠️ Telegram notify 스킵 — notify.yaml 또는 token 미설정`.
+
+판정 기록 파일 저장(Step 5)은 무조건 진행.
+
 Step 4 판정 직후, 결과에 따른 severity 로 Telegram 푸시. Plugin 번들 notify CLI 사용.
 
 | 판정 | severity | 이모지(제목) |
@@ -237,6 +246,17 @@ GO 후 진행 스킬:
 
 ### Step 6: DB 인제스트
 
+**사전 조건**: userConfig `hub_cli_doc_manager` 가 설정되어 있어야 함.
+
+미설정이거나 빈 값이면 이 Step 을 스킵하고 유저에게 한 줄로 알림:
+```
+⚠️ DB ingest 스킵 — hub_cli_doc_manager userConfig 미설정.
+  수동 등록: python <project-doc_manager-cli> ingest --file "${sessions_root}/{DATE}_{SceneName}_shoot-gate.md" --project vp
+```
+
+판정 기록 파일(Step 5)은 이미 저장됐으므로 skill 은 정상 완료.
+
+설정되어 있으면 실행:
 ```bash
 ${hub_cli_python} ${hub_cli_doc_manager} ingest \
   --file "${sessions_root}/{DATE}_{SceneName}_shoot-gate.md" \
