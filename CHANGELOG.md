@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (studio-share — Phase 7b)
+- **4 new userConfig fields** in `plugin.json`:
+  - `studio_share_root` — Z:/VPO/6_claude 공유 드라이브 루트 (비어 있으면 로컬 Hub 경로 유지)
+  - `active_user` — 개인 스크래치 스코핑용 사용자 디렉토리명
+  - `user_initials` — `_shared/` 파일명 충돌 방지 이니셜 (예: `MK`)
+  - `labs_root` — `_shared/labs` 내부 실험 영역 (NTFS ACL 제한)
+- **`studio-share.md` rule** (`agents/vp-agent/.claude/rules/`) — 3-tier 디렉토리 구조, promote-then-write 흐름, 오프라인 Z:\ probe 패턴, `_projects/` 쓰기 금지 정책
+- `vp-agent/CLAUDE.md` 라우팅 테이블에 `studio share / labs / _shared / 공유 드라이브` 키워드 항목 추가
+
 ## [0.2.0] - 2026-04-23
 
 Content migration wave — VP rules, agent SSOTs, Plugin scripts, and the

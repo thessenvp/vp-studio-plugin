@@ -180,6 +180,30 @@
       "default": "vp/sessions/quick-notes.md,vp/_archive/**",
       "title": "Hub read-only paths",
       "description": "Comma-separated glob patterns (relative to CLAUDE_PROJECT_DIR) that Plugin skills must never write. User-owned or archive-only areas."
+    },
+    "studio_share_root": {
+      "type": "string",
+      "default": "",
+      "title": "Studio shared drive root",
+      "description": "Root of the shared studio network drive (e.g., Z:/VPO/6_claude). Houses per-user scratch, _shared (labs-write), and _projects (archive) directories. Leave empty to use local CLAUDE_PROJECT_DIR Hub paths only."
+    },
+    "active_user": {
+      "type": "string",
+      "default": "",
+      "title": "Active user name",
+      "description": "Current user's directory name under studio_share_root (e.g., minkyun_park). Skills scope personal writes to {studio_share_root}/{active_user}/. Leave empty to disable user-scoped path resolution."
+    },
+    "user_initials": {
+      "type": "string",
+      "default": "",
+      "title": "User initials",
+      "description": "2-3 character initials appended to shared output filenames to prevent concurrent write collisions: {date}_{initials}_{topic}.md. Required when writing to _shared/ areas."
+    },
+    "labs_root": {
+      "type": "string",
+      "default": "",
+      "title": "Labs root",
+      "description": "Labs team workspace path (e.g., Z:/VPO/6_claude/_shared/labs). Skills promote internal dev/testing artifacts here. Write-restricted to labs members via NTFS ACL. Leave empty to disable labs-promotion steps."
     }
   }
 }
