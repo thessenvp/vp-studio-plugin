@@ -1,7 +1,17 @@
 # VP-Studio 마이그레이션 플랜
 
 > **작성일**: 2026-04-22
+> **최종 갱신**: 2026-04-30 (v1.1.0 cut + post-v1.0.0 backlog 추가)
 > **목적**: VP-Studio 를 Claude Code Plugin + 정돈된 Project/Knowledge 구조로 재편하는 중. 세션 인수인계용 전체 현황 문서.
+
+---
+
+## ⚡ 빠른 현황 (2026-04-30)
+
+- **현재 릴리즈**: `v1.1.0` (2026-04-30) — vp-review skill + claude-ecosystem rule 추가, Hub CLI Contract 준수 인라인 rewrite
+- **이전 릴리즈**: `v1.0.0` (2026-04-23) — Phase 7 시리즈 완료 (스튜디오 공유 드라이브 + agent 권한)
+- **다음 마일스톤**: `v1.2.0` — trust-tier 생태계 + doc_manager 연계 스킬 묶음 이식 (아래 §11 backlog 참조)
+- **본 문서 §4 의 Phase 표는 v0.x 시절 계획** — v1.0.0 이미 도달 + 가속됨. **§11 의 post-v1.0.0 backlog 가 현재 active 작업 목록.**
 
 ---
 
@@ -350,6 +360,76 @@ gh release view v0.1.0 --repo thessenvp/vp-studio-plugin
 
 ## 10. 이 문서의 라이프사이클
 
-- **유지 기간**: Phase 9 (v1.0.0) 완료 시까지
-- **업데이트 주체**: 매 Phase 완료 시 §5 "현재 진행 상황" 갱신
-- **아카이브**: 마이그레이션 완료 후 `docs/history/` 로 이동 또는 `CHANGELOG.md` 에 병합
+- **유지 기간**: ~~Phase 9 (v1.0.0) 완료 시까지~~ → **Hub CLI rewrite 시리즈 완료 시까지** (v1.x 의 마지막 backlog 항목 이식 후 아카이브)
+- **업데이트 주체**: 매 릴리즈 시 §11 backlog 갱신 (체크박스 진행)
+- **아카이브**: 모든 backlog 이식 완료 후 `docs/history/` 로 이동
+
+---
+
+## 11. Post-v1.0.0 Backlog (active)
+
+v1.0.0 이후 본체(VP-Studio)에 누적된 변경분 중, 플러그인으로 이식해야 하는 작업 목록.
+**모두 Hub CLI Contract 준수 (`${hub_cli_*}` 변수화) 인라인 rewrite 가 전제**. 묶음별 PR/릴리즈로 진행.
+
+### 11-1. v1.1.0 — DONE (2026-04-30)
+
+- [x] **vp-review skill** — `${hub_cli_python} ${hub_cli_reviewer}` 변수화 이식
+- [x] **claude-ecosystem.md rule** — Hub CLI Contract 작성 가이드 + 체크리스트
+- [x] vp-agent CLAUDE.md 라우팅 표 갱신 (claude-ecosystem, vp-review 행 추가)
+- [x] CHANGELOG `[1.1.0]` 섹션 작성
+
+### 11-2. v1.2.0 (next) — doc_manager 연계 스킬 묶음
+
+플러그인이 이미 보유한 `hub_cli_doc_manager` userConfig 활용. 모두 본체 SKILL.md 의
+`python vp/scripts/utils/doc_manager/cli.py ...` → `${hub_cli_python} ${hub_cli_doc_manager} ...` 인라인 rewrite.
+
+- [ ] `search-docs` skill — DB 키워드 검색
+- [ ] `doc-stats` skill — DB 통계 + stale 알림
+- [ ] `new-doc` skill — MD 템플릿 생성 (도메인·카테고리)
+- [ ] `compile-wiki` skill — `inbox/raw/` → `wiki/` 컴파일
+- [ ] `rnd-report` skill — R&D 보고서 작성 (2026-04-30 본체 추가) + `vp/docs/templates/rnd_report_template.md` 동봉
+
+**예상 공수**: 3-5시간 (스킬 5개 × ~30분 rewrite + 템플릿 동봉 + 검증)
+
+### 11-3. v1.3.0 — trust-tier 생태계
+
+신규 userConfig 필드 추가 + 묶음 이식. trust-tier 자체가 분류기 + 검증기 + ledger 의 통합 시스템.
+
+**선행 작업**:
+- [ ] plugin.json 에 신규 userConfig 검토 (`hub_cli_classifier`, `hub_cli_doc_verifier` 는 이미 등록됨 — 추가 신규 없음)
+
+**이식 항목**:
+- [ ] `trust-tier.md` rule — 3-tier 분류 SSOT + 자동 분류 결정 함수 명세
+- [ ] `doc-verification.md` rule — Confluence 이관 정확도 검증 룰
+- [ ] `classify-trust` skill — `${hub_cli_python} ${hub_cli_classifier}` 변수화
+- [ ] `verify-docs` skill — `${hub_cli_python} ${hub_cli_doc_verifier}` 변수화
+- [ ] `weekly-digest` skill 개정판 — 2단계 게이트 + 4-필터 + ledger
+- [ ] `knowledge-base.md` rule 갱신 (trust-tier 통합) + vp-agent CLAUDE.md 라우팅 갱신
+
+**예상 공수**: 4-6시간
+
+### 11-4. v1.4.0 (또는 후순위) — save-session / daily-recap delta
+
+본체에서 누적된 변경분을 플러그인 기존 스킬에 머지.
+
+- [ ] `save-session` skill 갱신 — worktree_sync 통합 분 (2026-04-13 이후)
+- [ ] `daily-recap` skill 갱신 — briefing 파이프라인 분리 분
+- [ ] 분리된 helper 들이 Project 측에 있어야 하는 부분 정리
+
+**예상 공수**: 1-2시간
+
+### 11-5. 보류 / Skip (in-flight 작업)
+
+이식 시점 미정 — 본체에서 안정화 후 재평가:
+
+- [ ] `codex_discord-bot-ops.md` rule — Discord 봇 인프라 (4-28 4014 disallowed intents 디버깅 미종결)
+- [ ] `openclaw-boundary.md` rule — 봇 인프라 동반
+- [ ] `gemma-delegation.md` 의 NIM 듀얼 디스패처 추가분 — 본체에서 "3회 통과 후 다음 영역" 명시된 파일럿 단계
+- [ ] new-worktree skill (root) — 플러그인에 root skills 자리 신설 여부 결정 필요
+
+### 11-6. 진행 규율
+
+- 한 묶음 = 한 minor 버전 = 한 PR (CHANGELOG 섹션 단위와 일치)
+- 인라인 rewrite 작업 시 **항상 Hub CLI Contract 준수 체크리스트** (`claude-ecosystem.md` 내 "체크리스트: 새 구성요소 추가 시" 참조)
+- 본체 SSOT 와 플러그인 SSOT 의 drift 가 발생할 수 있음 — 이식할 때마다 본 backlog §11-x 의 체크박스 갱신 + CHANGELOG 갱신
+- **본 문서 §4 의 v0.x Phase 표는 historical 자료** — 더 이상 active 추적 대상 아님

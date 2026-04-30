@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-04-30
+
+v1.0.0 이후 1주간 본체(VP-Studio)에 누적된 변경분 중, **Hub CLI Contract 위반 없이 인라인
+path rewrite 만으로 이식 가능한 항목** 만 선별해 컷한 패치 릴리즈. trust-tier 생태계, doc_manager
+연계 스킬, codex/openclaw 인프라 변경분은 **v1.2.0 이후로 의도적 보류**
+(plan-migration.md "v1.0.0 이후 backlog" 섹션 참조).
+
+### Added (vp-review — 코드 리뷰)
+- **`vp-review` skill** (`plugins/vp-studio/skills/vp-review/SKILL.md`)
+  - 증분/전체 코드 리뷰 — `git diff` 메트릭 + VP-Studio 컨벤션 검수 (네이밍·docstring·module 재사용)
+  - 시니어 개발자 체크리스트 (Architecture/Code Quality/Security/Performance/Convention/Documentation/Testing/Git Hygiene)
+  - 한국어 리포트 출력
+  - **사전 조건**: userConfig `hub_cli_reviewer` (이미 v1.0.0 부터 등록됨, default: `${CLAUDE_PROJECT_DIR}/vp/scripts/utils/reviewer/cli.py`)
+  - CLI 미설치 시 graceful 메시지 후 중단
+
+### Added (claude-ecosystem — 생태계 가이드)
+- **`agents/vp-agent/.claude/rules/claude-ecosystem.md`** — Claude Code 생태계 설정 SSOT
+  - 규칙·스킬·hook·MCP 서버 작성 형식 + Hub CLI Contract 작성 가이드
+  - 모든 경로 표기를 `${hub_cli_*}` / `${CLAUDE_PROJECT_DIR}` userConfig 변수로 통일
+  - "MCP 서버는 Project 책임 (플러그인 미번들)" — plan-migration.md A1 결정 명시
+  - 새 규칙·스킬 추가 시 체크리스트 (CHANGELOG 등록 + 하드코딩 금지 체크 포함)
+
+### Changed (vp-agent CLAUDE.md 라우팅)
+- 키워드 라우팅 표에 `claude-ecosystem.md` 와 `vp-review` skill 행 추가
+- "Plugin 범위 외" 주석에서 `claude-ecosystem`·`vp-review` 항목 제거 (이번 릴리즈로 플러그인 범위 진입)
+
+### Notes
+- `hub_cli_reviewer` userConfig 필드는 v1.0.0 부터 이미 plugin.json 에 등록되어 있었음 — 본 릴리즈에서는 SKILL.md 이식만 진행
+- 본체(VP-Studio main repo)의 SSOT 와 플러그인 SSOT 간 drift 가 발생할 수 있으므로 향후 동기화 시 본 CHANGELOG 와 plan-migration.md 의 backlog 섹션을 모두 갱신할 것
+
 ## [1.0.0] - 2026-04-23
 
 첫 번째 안정화 릴리즈. Phase 7 시리즈(스튜디오 공유 드라이브 통합)와
